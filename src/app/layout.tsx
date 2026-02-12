@@ -7,8 +7,8 @@ import Footer from "@/components/Footer";
 const workSans = Work_Sans({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Katalog Pakan Ternak & Peliharaan",
-  description: "Subur Makmur Pantang Mundur - Spesialis Pakan Ternak & Ikan",
+  title: "Subur Makmur Pantang Mundur | Spesialis Pakan Ternak, Pakan Ikan, dan Pakan Peliharaan",
+  description: "Subur Makmur Pantang Mundur - Spesialis Pakan Ternak, Pakan Ikan, dan Pakan Peliharaan",
 };
 
 export default function RootLayout({
@@ -19,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="id">
       <head>
+        <meta name="google-site-verification" content="4MKdK_XGSnVHrLHf9OTP1xmw1gOskxrLfgY4ODP9I0I" />
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
       </head>
