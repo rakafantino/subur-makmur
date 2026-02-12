@@ -176,6 +176,7 @@ export default function ProductDetailView({ product, features }: ProductDetailVi
                     alt={product.imageAlt}
                     src={product.imageSrc}
                     fill
+                    priority
                     sizes="(max-width: 1024px) 100vw, 50vw"
                   />
                 </div>

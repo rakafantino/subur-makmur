@@ -10,20 +10,6 @@ export default function Footer() {
             Jl. Raya Pematang Reba - Pekan Heran, Pekan Heran, Kec. Rengat Barat, Kabupaten Indragiri Hulu, Riau 29351
           </p>
         </div>
-        <div className="flex space-x-4">
-          <a
-            className="text-gray-400 hover:text-primary transition-colors"
-            href="#"
-          >
-            <span className="material-icons">facebook</span>
-          </a>
-          <a
-            className="text-gray-400 hover:text-primary transition-colors"
-            href="#"
-          >
-            <span className="material-icons">camera_alt</span>
-          </a>
-        </div>
       </div>
       <div className="text-center mt-8 text-xs text-gray-600">
         © 2026 Subur Makmur. All rights reserved.

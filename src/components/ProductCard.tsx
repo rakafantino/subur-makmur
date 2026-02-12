@@ -12,14 +12,16 @@ interface ProductCardProps {
   badge?: string;
   priceColorClass?: string;
   linkHref?: string;
+  priority?: boolean;
+  sizes?: string;
 }
 
-export default function ProductCard({ title, subtitle, price, unit, originalPrice, imageSrc, imageAlt, bgColorClass, badge, priceColorClass, linkHref = "/produk/pakan-ayam-super" }: ProductCardProps) {
+export default function ProductCard({ title, subtitle, price, unit, originalPrice, imageSrc, imageAlt, bgColorClass, badge, priceColorClass, linkHref = "/produk/pakan-ayam-super", priority = false, sizes = "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" }: ProductCardProps) {
   return (
     <article className="group bg-white border-4 border-black rounded-xl overflow-hidden hover:-translate-y-1 transition-transform duration-200 shadow-hard hover:shadow-hard-hover flex flex-col h-full">
       <div className={`h-48 ${bgColorClass} border-b-4 border-black p-4 flex items-center justify-center relative overflow-hidden`}>
         <div className="absolute inset-0 bg-[radial-gradient(circle,_var(--tw-gradient-stops))] from-yellow-100 to-transparent opacity-50"></div>
-        <Image src={imageSrc} alt={imageAlt} fill className="object-contain filter contrast-125 saturate-150 drop-shadow-xl transform group-hover:scale-110 transition-transform duration-300" />
+        <Image src={imageSrc} alt={imageAlt} fill className="object-contain filter contrast-125 saturate-150 drop-shadow-xl transform group-hover:scale-110 transition-transform duration-300" priority={priority} sizes={sizes} />
         {badge && <div className="absolute top-2 right-2 bg-pecel-orange text-white text-xs font-bold px-2 py-1 border border-black rounded shadow-sm">{badge}</div>}
       </div>
       <div className="p-4 flex flex-col flex-grow text-center">

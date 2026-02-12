@@ -221,6 +221,8 @@ export default function KatalogPage() {
                     <ProductCard 
                       {...product} 
                       linkHref={`/produk/${product.id}`}
+                      priority={index < 4}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
                     />
                  </div>
               ))}

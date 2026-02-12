@@ -4,7 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const workSans = Work_Sans({ subsets: ["latin"] });
+const workSans = Work_Sans({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: "Katalog Pakan Ternak & Peliharaan",
