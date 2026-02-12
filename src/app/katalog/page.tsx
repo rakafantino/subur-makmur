@@ -2,22 +2,82 @@
 
 import Image from "next/image";
 import ProductCard from "@/components/ProductCard";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { products } from "@/data/products";
+import { products as localProducts, type Product } from "@/data/products";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const ITEMS_PER_PAGE = 8;
+
 export default function KatalogPage() {
   const container = useRef<HTMLDivElement>(null);
+  const [allProducts, setAllProducts] = useState<Product[]>(localProducts);
+  const [displayProducts, setDisplayProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE);
+  const [hasMore, setHasMore] = useState(true);
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+
+  // Fetch dari Sanity
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        if (data.products && data.products.length > 0) {
+          setAllProducts(data.products);
+          setDisplayProducts(data.products.slice(0, ITEMS_PER_PAGE));
+        } else {
+          setDisplayProducts(localProducts.slice(0, ITEMS_PER_PAGE));
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setDisplayProducts(localProducts.slice(0, ITEMS_PER_PAGE));
+        setLoading(false);
+      });
+  }, []);
+
+  // Debounce search query (500ms)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Search filter (pake debounced query)
+  useEffect(() => {
+    const query = debouncedQuery.toLowerCase();
+    const filtered = allProducts.filter(p => 
+      p.title.toLowerCase().includes(query) ||
+      p.description.toLowerCase().includes(query)
+    );
+    setDisplayProducts(filtered.slice(0, ITEMS_PER_PAGE));
+    setVisibleCount(ITEMS_PER_PAGE);
+    setHasMore(filtered.length > ITEMS_PER_PAGE);
+  }, [debouncedQuery, allProducts]);
+
+  const loadMore = () => {
+    const query = debouncedQuery.toLowerCase();
+    const filtered = allProducts.filter(p => 
+      p.title.toLowerCase().includes(query) ||
+      p.description.toLowerCase().includes(query)
+    );
+    
+    const nextCount = visibleCount + ITEMS_PER_PAGE;
+    setDisplayProducts(filtered.slice(0, nextCount));
+    setVisibleCount(nextCount);
+    setHasMore(nextCount < filtered.length);
+  };
 
   useGSAP(
     () => {
       const tl = gsap.timeline();
 
-      // Header Animation
       tl.from(".header-title", {
         y: -50,
         opacity: 0,
@@ -32,7 +92,6 @@ export default function KatalogPage() {
         ease: "elastic.out(1, 0.5)",
       }, "-=0.5");
 
-      // Search Bar Animation
       gsap.from(".search-bar", {
         y: -30,
         opacity: 0,
@@ -41,7 +100,6 @@ export default function KatalogPage() {
         delay: 0.5,
       });
 
-      // Product Grid Animation
       gsap.from(".product-item", {
         scrollTrigger: {
           trigger: ".product-grid",
@@ -55,7 +113,6 @@ export default function KatalogPage() {
         ease: "power2.out",
       });
       
-       // Load More Button
       gsap.from(".load-more-btn", {
         scrollTrigger: {
           trigger: ".load-more-btn",
@@ -73,14 +130,12 @@ export default function KatalogPage() {
 
   return (
     <div ref={container} className="bg-background-light font-display text-gray-900 min-h-screen flex flex-col">
-      {/* Header Section mimicking a street banner */}
+      {/* Header */}
       <header className="w-full bg-white border-b-4 border-black relative overflow-hidden">
-        {/* Decorative top stripe pattern */}
         <div className="h-4 w-full bg-pecel-orange flex items-center justify-center overflow-hidden">
           <div className="w-full h-full bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIiBmaWxsPSJub25lIiBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMiI+PHBhdGggZD0iTTAgMjBMMjAgME0xMCAyMEwzMCAwTS0xMCAyMEwxMCAwIi8+PC9zdmc+')] opacity-20"></div>
         </div>
         <div className="container mx-auto px-4 py-8 md:py-12 text-center relative z-10">
-          {/* Main Title with Pecel Lele Style */}
           <h1 className="header-title text-5xl md:text-7xl font-black uppercase tracking-tighter pecel-text mb-2 transform -rotate-1">
             Subur Makmur
           </h1>
@@ -99,12 +154,11 @@ export default function KatalogPage() {
             </p>
           </div>
         </div>
-        {/* Abstract stylized animal silhouettes in background */}
         <div className="header-decoration absolute bottom-0 left-0 opacity-10 w-32 h-32 pointer-events-none">
           <Image
             className="w-full h-full object-contain grayscale contrast-200"
             alt="Abstract silhouette of a rooster"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWGu6aXlBWwN7t4LWU68oPNYX4pd4h5Z73CCqUXUjlpWiccVO-aAR47XPSwUc_WxP9w2cH4A4PQtFK-kdcZAg9yY_Y7wsDm5d8BwKFDyNlXsn1ZSiJwuMJt4L719qL6Bf2mroo7lfyguuY5Ntu9qua3Wv3kZTuXEhGCurl3zdM5kpGlenkz6nvQfpKvl_bhuzaH3KC451hJ8pltBGGKswQAPNUnled4ywGD1BkjaxYdA9-Hd-rdlivZ4YsAhKe3ECGTbjoQAusEKs"
+            src="/images/pakan-ayam-511.jpg"
             width={128}
             height={128}
           />
@@ -113,53 +167,100 @@ export default function KatalogPage() {
           <Image
             className="w-full h-full object-contain grayscale contrast-200"
             alt="Abstract silhouette of a cat"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2cdKpkJdGKWsID_FXpN-C7FN8H30VcPD_OAH0qsZrSbRWOkJs06piBhk-nIa7C3pnFSCfUGHqkL-vaN4eFwXq6rwDY93Fa_BNbpSef69SJjTvHSCiAP2JM1fsgpJ1lHkHMe1NP1-bPTM8uQAbUrB30UBfWwSZmrDRQXD3AikoJbm8v9GA1OzvWQgYqXaMhUMdSQF4TTo5Bl4eiKpI6u7jlGlrHSDBDNZDubdQqKgrpD3O3mImLciWpyPLmmhz4aIopSeUitTXv7I"
+            src="/images/whiskas-tuna.jpg"
             width={160}
             height={160}
           />
         </div>
       </header>
 
-      {/* Search & Filter Bar */}
+      {/* Search Bar */}
       <section className="search-bar container mx-auto px-4 -mt-6 mb-8 relative z-20">
-        <div className="bg-primary border-4 border-black p-4 rounded-xl shadow-hard transform rotate-1 max-w-4xl mx-auto flex flex-col md:flex-row gap-4 items-center">
+        <form className="bg-primary border-4 border-black p-4 rounded-xl shadow-hard transform rotate-1 max-w-4xl mx-auto flex flex-col md:flex-row gap-4 items-center">
           <div className="relative w-full">
             <span className="material-icons absolute left-3 top-1/2 transform -translate-y-1/2 text-black">
               search
             </span>
             <input
               className="w-full pl-10 pr-4 py-3 bg-white border-2 border-black rounded-lg font-bold placeholder-gray-500 focus:outline-none focus:ring-4 focus:ring-black/20 text-black uppercase"
-              placeholder="Cari yang kamu butuhin"
+              placeholder="Cari yang kamu butuhin..."
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <button className="w-full md:w-auto px-8 py-3 bg-pecel-orange text-white font-black uppercase border-2 border-black rounded-lg hover:bg-orange-600 transition-colors shadow-sm whitespace-nowrap">
-            Cari Produk
+          <button 
+            type="submit"
+            className="w-full md:w-auto px-8 py-3 bg-pecel-orange text-white font-black uppercase border-2 border-black rounded-lg hover:bg-orange-600 transition-colors shadow-sm whitespace-nowrap cursor-pointer"
+          >
+            Cari
           </button>
-        </div>
+        </form>
       </section>
 
-      {/* Main Content Grid */}
+      {/* Main Content */}
       <main className="flex-grow container mx-auto px-4 py-8">
-        <div className="product-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 md:gap-8">
-          {products.map((product, index) => (
-             <div key={index} className="product-item">
-                <ProductCard 
-                  {...product} 
-                  linkHref={`/produk/${product.id}`}
-                />
-             </div>
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center py-12">
+            <p className="text-xl font-bold">Loading produk...</p>
+          </div>
+        ) : (
+          <>
+            {/* Search Results Info */}
+            {searchQuery && (
+              <div className="mb-6 text-center">
+                <p className="font-bold text-gray-600">
+                  {displayProducts.length} hasil untuk "{searchQuery}"
+                </p>
+              </div>
+            )}
 
-        {/* Pagination / Load More */}
-        <div className="mt-12 text-center">
-          <button className="load-more-btn px-8 py-3 bg-white text-black font-black uppercase border-2 border-black rounded-lg hover:bg-gray-100 transition-colors shadow-hard transform hover:scale-105">
-            Muat Lebih Banyak Barang
-          </button>
-        </div>
+            <div className="product-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 md:gap-8">
+              {displayProducts.map((product, index) => (
+                 <div key={product.id || index} className="product-item">
+                    <ProductCard 
+                      {...product} 
+                      linkHref={`/produk/${product.id}`}
+                    />
+                 </div>
+              ))}
+            </div>
+
+            {/* No Results */}
+            {displayProducts.length === 0 && searchQuery && (
+              <div className="text-center py-12">
+                <p className="text-xl font-bold text-gray-500">
+                  Produk tidak ditemukan 😔
+                </p>
+                <button 
+                  onClick={() => {
+                    setSearchQuery("");
+                    setDebouncedQuery("");
+                    setDisplayProducts(allProducts.slice(0, ITEMS_PER_PAGE));
+                    setVisibleCount(ITEMS_PER_PAGE);
+                    setHasMore(allProducts.length > ITEMS_PER_PAGE);
+                  }}
+                  className="mt-4 px-6 py-2 bg-primary text-black font-bold border-2 border-black rounded-lg hover:bg-pecel-yellow transition-colors"
+                >
+                  Tampilkan Semua Produk
+                </button>
+              </div>
+            )}
+
+            {/* Load More Button */}
+            {hasMore && (
+              <div className="mt-12 text-center">
+                <button
+                  onClick={loadMore}
+                  className="load-more-btn px-8 py-3 bg-white text-black font-black uppercase border-2 border-black rounded-lg hover:bg-gray-100 transition-colors shadow-hard transform hover:scale-105"
+                >
+                  Lihat Selanjutnya →
+                </button>
+              </div>
+            )}
+          </>
+        )}
       </main>
-
     </div>
   );
 }
