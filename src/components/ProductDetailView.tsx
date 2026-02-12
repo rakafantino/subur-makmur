@@ -15,6 +15,7 @@ interface ProductDetailViewProps {
     imageAlt: string;
     bgColorClass?: string;
     badge?: string;
+    description?: string;
   };
   features: string[];
 }
@@ -181,8 +182,18 @@ export default function ProductDetailView({ product, features }: ProductDetailVi
                   />
                 </div>
                 {/* Overlay Badges */}
-                {product.badge && (
+                {product.badge === 'TERLARIS' && (
                   <div className="product-badge absolute -top-2 -right-2 md:-top-4 md:-right-4 bg-banner-red text-white font-black text-sm md:text-xl px-4 py-2 md:px-6 md:py-3 rounded-lg border-4 border-black shadow-[4px_4px_0_0_#000] transform rotate-12 z-20">
+                    TERLARIS!
+                  </div>
+                )}
+                {product.badge === 'BARU' && (
+                  <div className="product-badge absolute -top-2 -right-2 md:-top-4 md:-right-4 bg-pecel-orange text-white font-black text-sm md:text-xl px-4 py-2 md:px-6 md:py-3 rounded-lg border-4 border-black shadow-[4px_4px_0_0_#000] transform rotate-12 z-20">
+                    BARU!
+                  </div>
+                )}
+                {product.badge && product.badge !== 'TERLARIS' && product.badge !== 'BARU' && (
+                  <div className="product-badge absolute -top-2 -right-2 md:-top-4 md:-right-4 bg-primary text-black font-black text-sm md:text-xl px-4 py-2 md:px-6 md:py-3 rounded-lg border-4 border-black shadow-[4px_4px_0_0_#000] transform rotate-12 z-20">
                     {product.badge}!
                   </div>
                 )}
@@ -249,6 +260,30 @@ export default function ProductDetailView({ product, features }: ProductDetailVi
                   ))}
                 </ul>
               </div>
+
+              {/* Description */}
+              {product.description && (
+                <div className="detail-item bg-pecel-yellow/20 p-4 md:p-6 rounded-xl border-4 border-black shadow-[4px_4px_0_0_#000] transform rotate-1">
+                  <h4 className="font-black text-lg mb-3 uppercase tracking-wide flex items-center gap-2">
+                    <span className="material-icons text-pecel-orange">info</span>
+                    Deskripsi
+                  </h4>
+                  <div className="font-bold text-gray-800 leading-relaxed whitespace-pre-wrap">
+                    {product.description.split('\n').map((line, i) => {
+                      const trimmed = line.trim()
+                      if (trimmed.startsWith('-') || trimmed.startsWith('•')) {
+                        return (
+                          <div key={i} className="flex items-start gap-2 mt-1">
+                            <span className="text-pecel-orange mt-1">•</span>
+                            <span>{trimmed.replace(/^[-•]\s*/, '')}</span>
+                          </div>
+                        )
+                      }
+                      return <div key={i}>{line}</div>
+                    })}
+                  </div>
+                </div>
+              )}
 
               {/* Call to Action */}
               <div className="detail-item pt-4">

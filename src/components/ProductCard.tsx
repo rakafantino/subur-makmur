@@ -22,7 +22,15 @@ export default function ProductCard({ title, subtitle, price, unit, originalPric
       <div className={`h-48 ${bgColorClass} border-b-4 border-black p-4 flex items-center justify-center relative overflow-hidden`}>
         <div className="absolute inset-0 bg-[radial-gradient(circle,_var(--tw-gradient-stops))] from-yellow-100 to-transparent opacity-50"></div>
         <Image src={imageSrc} alt={imageAlt} fill className="object-contain filter contrast-125 saturate-150 drop-shadow-xl transform group-hover:scale-110 transition-transform duration-300" priority={priority} sizes={sizes} />
-        {badge && <div className="absolute top-2 right-2 bg-pecel-orange text-white text-xs font-bold px-2 py-1 border border-black rounded shadow-sm">{badge}</div>}
+        {badge === 'TERLARIS' && (
+          <div className="absolute top-2 right-2 bg-banner-red text-white text-xs font-bold px-2 py-1 border border-black rounded shadow-sm">TERLARIS</div>
+        )}
+        {badge === 'BARU' && (
+          <div className="absolute top-2 right-2 bg-pecel-orange text-white text-xs font-bold px-2 py-1 border border-black rounded shadow-sm">BARU</div>
+        )}
+        {badge && badge !== 'TERLARIS' && badge !== 'BARU' && (
+          <div className="absolute top-2 right-2 bg-primary text-black text-xs font-bold px-2 py-1 border border-black rounded shadow-sm">{badge}</div>
+        )}
       </div>
       <div className="p-4 flex flex-col flex-grow text-center">
         <h3 className="text-xl font-black uppercase leading-tight mb-2 text-black">{title}</h3>
