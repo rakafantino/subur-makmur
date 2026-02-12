@@ -3,16 +3,33 @@
 import Link from "next/link";
 import Image from "next/image";
 import ProductCard from "@/components/ProductCard";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { products } from "@/data/products";
+import type { Product } from "@/data/products";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
   const container = useRef<HTMLDivElement>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch dari Sanity
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        if (data.products && data.products.length > 0) {
+          setProducts(data.products);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  }, []);
 
   useGSAP(
     () => {
@@ -273,14 +290,24 @@ export default function Home() {
               </p>
             </div>
             <div className="menu-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {products.slice(0, 3).map((product, index) => (
-                <div key={index} className="product-card">
-                  <ProductCard
-                    {...product}
-                    linkHref={`/produk/${product.id}`}
-                  />
+              {loading ? (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-xl font-bold">Loading produk...</p>
                 </div>
-              ))}
+              ) : products.length > 0 ? (
+                products.slice(0, 3).map((product, index) => (
+                  <div key={product.id || index} className="product-card">
+                    <ProductCard
+                      {...product}
+                      linkHref={`/produk/${product.id}`}
+                    />
+                  </div>
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-xl font-bold text-gray-500">Produk tidak tersedia</p>
+                </div>
+              )}
             </div>
             <div className="menu-title mt-12 text-center">
               <Link
