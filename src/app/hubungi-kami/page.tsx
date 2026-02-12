@@ -15,30 +15,29 @@ export default function ContactPage() {
       // Header Animation
       tl.from(".contact-header", {
         scale: 0.8,
-        opacity: 0,
+        autoAlpha: 0,
         duration: 0.8,
         ease: "back.out(1.7)",
       })
       .from(".contact-header-text", {
          y: 20,
-         opacity: 0,
+         autoAlpha: 0,
          duration: 0.5,
          stagger: 0.1
       }, "-=0.4");
 
       // Content Animation
       gsap.from(".left-column-item", {
-        x: -50,
-        opacity: 0,
+        autoAlpha: 0,
         duration: 0.8,
         stagger: 0.2,
-        ease: "power2.out",
+        ease: "circ.in",
         delay: 0.3,
       });
 
       gsap.from(".right-column-item", {
         x: 50,
-        opacity: 0,
+        autoAlpha: 0,
         duration: 0.8,
         ease: "power2.out",
         delay: 0.3,
@@ -46,7 +45,7 @@ export default function ContactPage() {
       
        gsap.from(".bottom-quote", {
         y: 50,
-        opacity: 0,
+        autoAlpha: 0,
         duration: 0.8,
         ease: "power2.out",
         delay: 0.8,
@@ -57,7 +56,7 @@ export default function ContactPage() {
   );
 
   return (
-    <div ref={container} className="bg-background-light font-display h-full text-gray-900 min-h-screen flex flex-col relative overflow-x-hidden bg-banner-texture">
+    <div ref={container} className="bg-background-light font-display h-full text-gray-900 min-h-screen flex flex-col relative overflow-hidden bg-banner-texture">
       {/* Decorative Corner Elements (Simulated Illustrations) */}
       <div className="absolute top-24 left-0 w-32 h-32 md:w-48 md:h-48 opacity-20 pointer-events-none z-0 transform -rotate-12">
         <Image
@@ -71,29 +70,29 @@ export default function ContactPage() {
 
       <main className="flex-grow flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header Section */}
-        <div className="contact-header text-center mb-12 relative">
+        <div className="contact-header text-center mb-12 relative" style={{ visibility: "hidden" }}>
           <div className="absolute -top-6 -left-6 text-pecel-orange opacity-40 transform -rotate-12">
             <span className="material-icons text-6xl">spa</span>
           </div>
           <div className="absolute -bottom-4 -right-8 text-primary opacity-60 transform rotate-12">
             <span className="material-icons text-6xl">pets</span>
           </div>
-          <h1 className="contact-header-text text-6xl md:text-8xl font-black pecel-gradient-text uppercase leading-none tracking-tight transform -rotate-2">
+          <h1 className="contact-header-text text-6xl md:text-8xl font-black pecel-gradient-text uppercase leading-none tracking-tight transform -rotate-2" style={{ visibility: "hidden" }}>
             Hubungi
             <br />
             Kami
           </h1>
-          <p className="contact-header-text mt-6 text-lg md:text-xl font-bold bg-black text-white inline-block px-4 py-1 transform rotate-1 shadow-hard">
+          <p className="contact-header-text mt-6 text-lg md:text-xl font-bold bg-black text-white inline-block px-4 py-1 transform rotate-1 shadow-hard" style={{ visibility: "hidden" }}>
             Sedia Pakan Ayam, Ikan, Bebek &amp; Hewan Peliharaan
           </p>
         </div>
 
         {/* Contact Cards Container */}
-        <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
+        <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start px-2">
           {/* WhatsApp / Contact Column */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-10">
             {/* Main WhatsApp Card */}
-            <div className="left-column-item bg-white border-4 border-black p-6 md:p-8 rounded-lg shadow-hard transform hover:-translate-y-1 transition-transform duration-200 relative overflow-hidden group">
+            <div className="left-column-item bg-white border-3 md:border-4 border-black p-5 md:p-8 rounded-lg shadow-[4px_4px_0_0_rgba(0,0,0,1)] md:shadow-hard transform hover:-translate-y-1 transition-transform duration-200 relative overflow-hidden group" style={{ visibility: "hidden" }}>
               <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-pecel-orange via-yellow-400 to-primary"></div>
               <div className="flex flex-col items-center text-center">
                 <div className="bg-green-500 text-white p-4 rounded-full mb-4 border-2 border-black shadow-sm">
@@ -123,7 +122,7 @@ export default function ContactPage() {
             </div>
 
             {/* Operating Hours Card */}
-            <div className="left-column-item bg-yellow-50 border-2 border-dashed border-black p-6 rounded-lg relative">
+            <div className="left-column-item bg-yellow-50 border-2 border-dashed border-black p-6 rounded-lg relative" style={{ visibility: "hidden" }}>
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-black text-primary px-4 py-1 font-bold text-sm uppercase rounded shadow-sm">
                 Jam Buka
               </div>
@@ -142,7 +141,7 @@ export default function ContactPage() {
 
           {/* Map Column */}
           <div className="flex flex-col h-full">
-            <div className="right-column-item bg-white p-2 md:p-3 border-4 border-black rounded-lg shadow-hard h-full flex flex-col">
+            <div className="right-column-item bg-white p-2 md:p-3 border-3 md:border-4 border-black rounded-lg shadow-[4px_4px_0_0_rgba(0,0,0,1)] md:shadow-hard h-full flex flex-col" style={{ visibility: "hidden" }}>
               <div className="flex justify-between items-center mb-3 px-2">
                 <h3 className="font-black text-xl uppercase italic tracking-wider flex items-center gap-2">
                   <span className="material-icons text-pecel-orange">
@@ -191,7 +190,7 @@ export default function ContactPage() {
         </div>
 
         {/* Fun little text at bottom */}
-        <div className="bottom-quote mt-16 text-center max-w-lg mx-auto transform rotate-1">
+        <div className="bottom-quote mt-16 text-center max-w-lg mx-auto transform rotate-1" style={{ visibility: "hidden" }}>
           <div className="inline-block bg-primary px-6 py-2 border-2 border-black rounded-full shadow-hard-sm">
             <p className="font-bold text-black uppercase tracking-wide text-sm md:text-base">
               "Ternak Kenyang, Juragan Tenang"
